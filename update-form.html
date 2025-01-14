@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Update</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .form-container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333333;
+            margin-bottom: 20px;
+        }
+
+        .update-form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .update-form input,
+        .update-form textarea,
+        .update-form select {
+            margin-bottom: 10px;
+            padding: 10px;
+            font-family: Arial, sans-serif;
+        }
+
+        .update-form button {
+            padding: 10px;
+            background-color: #25d366;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .nav-button {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>New Update</h1>
+        <form class="update-form" onsubmit="addUpdate(event)">
+            <input type="text" id="name" placeholder="Enter your name" required>
+            <select id="status">
+                <option value="">Select status</option>
+                <option value="In Office">In Office</option>
+                <option value="Not In Office">Not In Office</option>
+            </select>
+            <textarea id="updateText" placeholder="Enter your note"></textarea>
+            <button type="submit">Add Update</button>
+        </form>
+        <button class="nav-button" onclick="navigateToUpdates()">View Latest Updates</button>
+    </div>
+
+    <script>
+        function addUpdate(event) {
+            event.preventDefault();
+
+            const updates = JSON.parse(localStorage.getItem("updates")) || [];
+
+            const update = {
+                id: Date.now().toString(),
+                name: document.getElementById("name").value,
+                status: document.getElementById("status").value || "N/A",
+                updateText: document.getElementById("updateText").value || "N/A",
+                date: new Date()
+            };
+
+            updates.unshift(update);  // Add new update to the top
+            localStorage.setItem("updates", JSON.stringify(updates));
+
+            // Clear form fields
+            document.getElementById("name").value = '';
+            document.getElementById("status").value = '';
+            document.getElementById("updateText").value = '';
+        }
+
+        function navigateToUpdates() {
+            window.location.href = 'update-list.html';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latest Updates</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .update-container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333333;
+            margin-bottom: 20px;
+        }
+
+        .update-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .update-item {
+            background-color: white;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .update-date {
+            color: #999999;
+            font-size: 0.9em;
+        }
+
+        .delete-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .delete-all-button {
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .nav-button {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .search-box {
+            margin-bottom: 20px;
+            padding: 10px;
+            width: calc(100% - 40px);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="update-container">
+        <h1>Latest Updates</h1>
+        <input type="text" id="searchBox" class="search-box" placeholder="Search by name" oninput="searchUpdates()">
+        <button class="delete-all-button" onclick="confirmDeleteAll()">Delete All Updates</button>
+        <ul class="update-list" id="updateList"></ul>
+        <button class="nav-button" onclick="navigateToForm()">Add New Update</button>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", loadUpdates);
+
+        function loadUpdates() {
+            const updates = JSON.parse(localStorage.getItem("updates")) || [];
+            displayUpdates(updates);
+        }
+
+        function displayUpdates(updates) {
+            const updateList = document.getElementById("updateList");
+            updateList.innerHTML = "";
+
+            updates.forEach(update => {
+                const updateItem = createUpdateItem(update);
+                updateList.appendChild(updateItem);
+            });
+        }
+
+        function createUpdateItem(update) {
+            const updateItem = document.createElement("li");
+            updateItem.className = "update-item";
+            const dateString = new Date(update.date).toLocaleString();
+
+            updateItem.innerHTML = `
+                <p><strong>Name:</strong> ${update.name}</p>
+                <p><strong>Status:</strong> ${update.status}</p>
+                <p>${update.updateText}</p>
+                <p class="update-date">${dateString}</p>
+                <button class="delete-button" onclick="deleteUpdate(this, '${update.id}')">Delete</button>
+            `;
+
+            return updateItem;
+        }
+
+        function deleteUpdate(button, id) {
+            const updates = JSON.parse(localStorage.getItem("updates")) || [];
+            const filteredUpdates = updates.filter(update => update.id !== id);
+            localStorage.setItem("updates", JSON.stringify(filteredUpdates));
+            button.parentElement.remove();
+        }
+
+        function confirmDeleteAll() {
+            const code = prompt("Enter code :");
+            if (code === "12345") {
+                const confirmAction = confirm("Are you sure you want to delete all updates?");
+                if (confirmAction) {
+                    deleteAllUpdates();
+                }
+            } else {
+                alert("Incorrect code. No updates were deleted.");
+            }
+        }
+
+        function deleteAllUpdates() {
+            localStorage.removeItem("updates");
+            document.getElementById("updateList").innerHTML = "";
+        }
+
+        function navigateToForm() {
+            window.location.href = 'update-form.html';
+        }
+
+        function searchUpdates() {
+            const searchQuery = document.getElementById("searchBox").value.toLowerCase();
+            const updates = JSON.parse(localStorage.getItem("updates")) || [];
+            const filteredUpdates = updates.filter(update => update.name.toLowerCase().includes(searchQuery));
+            displayUpdates(filteredUpdates);
+        }
+    </script>
+</body>
+</html>

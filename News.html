@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latest Updates</title>
+    <style>
+        @font-face {
+            font-family: 'Jameel Noori Nastaleeq';
+            src: url('path/to/JameelNooriNastaleeq.ttf') format('truetype');
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+            direction: ltr;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .form-container,
+        .update-container {
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #333333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .update-form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .update-form input,
+        .update-form textarea,
+        .update-form select {
+            margin-bottom: 10px;
+            padding: 10px;
+            font-family: Arial, sans-serif;
+        }
+
+        .update-form button {
+            padding: 10px;
+            background-color: #25d366;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .update-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .update-item {
+            background-color: white;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .update-date {
+            color: #999999;
+            font-size: 0.9em;
+        }
+
+        .delete-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .delete-all-button {
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: flex-start;
+            }
+
+            .form-container,
+            .update-container {
+                flex: 1;
+                margin-right: 20px;
+            }
+
+            .form-container {
+                margin-right: 20px;
+            }
+
+            .update-container {
+                margin-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <h1>New Update</h1>
+            <form class="update-form" onsubmit="addUpdate(event)">
+                <input type="text" id="title" placeholder="Enter title">
+                <input type="text" id="name" placeholder="Enter your name">
+                <input type="text" id="designation" placeholder="Enter your designation">
+                <input type="date" id="arrivalDate" placeholder="Enter date">
+                <input type="time" id="timeIn" placeholder="Enter time in office">
+                <input type="time" id="timeOut" placeholder="Enter time out from office">
+                <select id="status">
+                    <option value="">Select status</option>
+                    <option value="In Office">In Office</option>
+                    <option value="Out">Out</option>
+                </select>
+                <textarea id="updateText" placeholder="Enter your update"></textarea>
+                <button type="submit">Add Update</button>
+            </form>
+        </div>
+        <div class="update-container">
+            <h1>Latest Updates</h1>
+            <button class="delete-all-button" onclick="confirmDeleteAll()">Delete All Updates</button>
+            <ul class="update-list" id="updateList"></ul>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", loadUpdates);
+
+        function loadUpdates() {
+            const updates = JSON.parse(localStorage.getItem("updates")) || [];
+            const updateList = document.getElementById("updateList");
+            updateList.innerHTML = "";
+
+            updates.forEach(update => {
+                const updateItem = createUpdateItem(update);
+                updateList.appendChild(updateItem);
+            });
+        }
+
+        function createUpdateItem(update) {
+            const updateItem = document.createElement("li");
+            updateItem.className = "update-item";
+            const dateString = new Date(update.date).toLocaleString();
+
+            updateItem.innerHTML = `
+                <p><strong>Title:</strong> ${update.title}</p>
+                <p><strong>Name:</strong> ${update.name}</p>
+                <p><strong>Designation:</strong> ${update.designation}</p>
+                <p><strong>Date:</strong> ${update.arrivalDate}</p>
+                <p><strong>In-Office:</strong> ${update.timeIn}</p>
+                <p><strong>Out of office:</strong> ${update.timeOut}</p>
+                <p><strong>Status:</strong> ${update.status}</p>
+                <p>${update.updateText}</p>
+                <p class="update-date">${dateString}</p>
+                <button class="delete-button" onclick="deleteUpdate(this, '${update.id}')">Delete</button>
+            `;
+
+            return updateItem;
+        }
+
+        function addUpdate(event) {
+            event.preventDefault();
+
+            const updates = JSON.parse(localStorage.getItem("updates")) || [];
+
+            const update = {
+                id: Date.now().toString(),
+                title: document.getElementById("title").value || "N/A",
+                name: document.getElementById("name").value || "N/A",
+                designation: document.getElementById("designation").value || "N/A",
+                arrivalDate: document.getElementById("arrivalDate").value || "N/A",
+                timeIn: document.getElementById("timeIn").value || "N/A",
+                timeOut: document.getElementById("timeOut").value || "N/A",
+                status: document.getElementById("status").value || "N/A",
+                updateText: document.getElementById("updateText").value || "N/A",
+                date: new Date()
+            };
+
+            updates.unshift(update);  // Add new update to the top
+            localStorage.setItem("updates", JSON.stringify(updates));
+
+            const updateList = document.getElementById("updateList");
+            const updateItem = createUpdateItem(update);
+            updateList.insertBefore(updateItem, updateList.firstChild);  // Add new update item to the top
+
+            document.getElementById("title").value = '';
+            document.getElementById("name").value = '';
+            document.getElementById("designation").value = '';
+            document.getElementById("arrivalDate").value = '';
+            document.getElementById("timeIn").value = '';
+            document.getElementById("timeOut").value = '';
+            document.getElementById("status").value = '';
+            document.getElementById("updateText").value = '';
+        }
+
+        function deleteUpdate(button, id) {
+            const updates = JSON.parse(localStorage.getItem("updates")) || [];
+            const filteredUpdates = updates.filter(update => update.id !== id);
+            localStorage.setItem("updates", JSON.stringify(filteredUpdates));
+            button.parentElement.remove();
+        }
+
+        function confirmDeleteAll() {
+            const code = prompt("Enter code 12345 to confirm deletion of all updates:");
+            if (code === "12345") {
+                const confirmAction = confirm("Are you sure you want to delete all updates?");
+                if (confirmAction) {
+                    deleteAllUpdates();
+                }
+            } else {
+                alert("Incorrect code. No updates were deleted.");
+            }
+        }
+
+        function deleteAllUpdates() {
+            localStorage.removeItem("updates");
+            document.getElementById("updateList").innerHTML = "";
+        }
+    </script>
+</body>
+</html>
