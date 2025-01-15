@@ -1,65 +1,159 @@
-document.getElementById('dataForm').addEventListener('submit', function(event) {
-    event.preventDefault();
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('dataForm');
+    const showDataBtn = document.getElementById('showDataBtn');
+    const dataSection = document.getElementById('dataSection');
+    const dataTable = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
+    const searchBox = document.getElementById('searchBox');
+    const deleteAllBtn = document.getElementById('deleteAllBtn');
 
-    let id = document.getElementById('id').value;
-    let name = document.getElementById('name').value;
-    let cnic = document.getElementById('cnic').value;
-    let password = document.getElementById('password').value;
-    let halqa = document.getElementById('halqa').value;
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const id = Date.now();
+        const name = document.getElementById('name').value;
+        const cnic = document.getElementById('cnic').value;
+        const patwariId = document.getElementById('patwariId').value;
+        const halqa = document.getElementById('halqa').value;
+        const idPassword = document.getElementById('idPassword').value;
+        const whatsapp = document.getElementById('whatsapp').value;
+        const password = document.getElementById('password').value;
 
-    let data = {
-        id: id,
-        name: name,
-        cnic: cnic,
-        password: password,
-        halqa: halqa
-    };
+        if (password !== '7897836') {
+            alert('Incorrect password!');
+            return;
+        }
 
-    localStorage.setItem('formData', JSON.stringify(data));
+        const data = { id, name, cnic, patwariId, halqa, idPassword, whatsapp };
+        saveData(data);
+        appendDataToTable(data);
+        form.reset();
+        dataSection.style.display = 'block';
+    });
 
-    document.getElementById('result').innerHTML = "Data saved successfully!";
-});
+    showDataBtn.addEventListener('click', () => {
+        const password = prompt('Enter password to view data:');
+        if (password !== '7897836') {
+            alert('Incorrect password!');
+            return;
+        }
+        dataSection.style.display = 'block';
+        loadData();
+    });
 
-function loadData() {
-    let data = JSON.parse(localStorage.getItem('formData'));
-    if (data) {
-        let dataTable = document.getElementById('dataTable');
-        dataTable.innerHTML = `
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>CNIC</th>
-                <th>Password</th>
-                <th>Halqa</th>
-            </tr>
-            <tr>
-                <td>${data.id}</td>
-                <td>${data.name}</td>
-                <td>${data.cnic}</td>
-                <td>${data.password}</td>
-                <td>${data.halqa}</td>
-            </tr>
-        `;
-    }
-}
-
-function searchTable() {
-    let input = document.getElementById('search');
-    let filter = input.value.toUpperCase();
-    let table = document.getElementById('dataTable');
-    let tr = table.getElementsByTagName('tr');
-
-    for (let i = 1; i < tr.length; i++) {
-        let td = tr[i].getElementsByTagName('td');
-        let found = false;
-        for (let j = 0; j < td.length; j++) {
-            if (td[j]) {
-                if (td[j].innerHTML.toUpperCase().indexOf(filter) > -1) {
-                    found = true;
+    searchBox.addEventListener('input', (e) => {
+        const filter = e.target.value.toLowerCase();
+        const rows = dataTable.getElementsByTagName('tr');
+        for (let i = 0; i < rows.length; i++) {
+            const cells = rows[i].getElementsByTagName('td');
+            let match = false;
+            for (let j = 0; j < cells.length - 3; j++) {
+                if (cells[j].textContent.toLowerCase().includes(filter)) {
+                    match = true;
                     break;
                 }
             }
+            rows[i].style.display = match ? '' : 'none';
         }
-        tr[i].style.display = found ? '' : 'none';
+    });
+
+    deleteAllBtn.addEventListener('click', () => {
+        const password = prompt('Enter password to delete all data:');
+        if (password !== '7897836') {
+            alert('Incorrect password!');
+            return;
+        }
+
+        localStorage.removeItem('data');
+        dataTable.innerHTML = '';
+        dataSection.style.display = 'none';
+    });
+
+    function saveData(data) {
+        let savedData = JSON.parse(localStorage.getItem('data')) || [];
+        savedData.unshift(data);
+        localStorage.setItem('data', JSON.stringify(savedData));
     }
-}
+
+    function loadData() {
+        const savedData = JSON.parse(localStorage.getItem('data')) || [];
+        savedData.forEach(data => appendDataToTable(data));
+        if (savedData.length > 0) {
+            dataSection.style.display = 'block';
+        }
+    }
+
+    function appendDataToTable(data) {
+        const row = dataTable.insertRow();
+        row.insertCell(0).textContent = data.id;
+        row.insertCell(1).textContent = data.name;
+        row.insertCell(2).textContent = data.cnic;
+        row.insertCell(3).textContent = data.patwariId;
+        row.insertCell(4).textContent = data.halqa;
+        row.insertCell(5).textContent = data.idPassword;
+        row.insertCell(6).innerHTML = `<a href="https://wa.me/${data.whatsapp}" target="_blank">${data.whatsapp}</a>`;
+        const editCell = row.insertCell(7);
+        const deleteCell = row.insertCell(8);
+
+        const editButton = document.createElement('button');
+        editButton.textContent = 'Edit';
+        editButton.onclick = () => requestPassword(() => editData(row, data));
+        editCell.appendChild(editButton);
+
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Delete';
+        deleteButton.onclick = () => requestPassword(() => deleteData(row, data.id));
+        deleteCell.appendChild(deleteButton);
+    }
+
+    function requestPassword(callback) {
+        const password = prompt('Enter password:');
+        if (password === '7897836') {
+            callback();
+        } else {
+            alert('Incorrect password!');
+        }
+    }
+
+    function editData(row, data) {
+        const cells = row.getElementsByTagName('td');
+        const name = prompt('Edit Name', data.name);
+        const cnic = prompt('Edit CNIC', data.cnic);
+        const patwariId = prompt('Edit Patwari ID', data.patwariId);
+        const halqa = prompt('Edit Halqa', data.halqa);
+        const idPassword = prompt('Edit ID Password', data.idPassword);
+        const whatsapp = prompt('Edit WhatsApp', data.whatsapp);
+
+        if (name !== null) data.name = name;
+        if (cnic !== null) data.cnic = cnic;
+        if (patwariId !== null) data.patwariId = patwariId;
+        if (halqa !== null) data.halqa = halqa;
+        if (idPassword !== null) data.idPassword = idPassword;
+        if (whatsapp !== null) data.whatsapp = whatsapp;
+
+        saveEditedData(data);
+        cells[1].textContent = data.name;
+        cells[2].textContent = data.cnic;
+        cells[3].textContent = data.patwariId;
+        cells[4].textContent = data.halqa;
+        cells[5].textContent = data.idPassword;
+        cells[6].innerHTML = `<a href="https://wa.me/${data.whatsapp}" target="_blank">${data.whatsapp}</a>`;
+    }
+
+    function saveEditedData(data) {
+        let savedData = JSON.parse(localStorage.getItem('data')) || [];
+        savedData = savedData.map(item => item.id === data.id ? data : item);
+        localStorage.setItem('data', JSON.stringify(savedData));
+    }
+
+    function deleteData(row, id) {
+        row.remove();
+        let savedData = JSON.parse(localStorage.getItem('data')) || [];
+        savedData = savedData.filter(item => item.id !== id);
+        localStorage.setItem('data', JSON.stringify(savedData));
+
+        if (savedData.length === 0) {
+            dataSection.style.display = 'none';
+        }
+    }
+
+    loadData();
+});
