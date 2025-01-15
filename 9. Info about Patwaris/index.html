@@ -3,55 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Entry Form</title>
+    <title>Patwari Data Table</title>
     <link rel="stylesheet" href="styles.css">
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const password = prompt('Enter password to access the page:');
+            if (password !== '7897836') {
+                alert('Incorrect password! You will be redirected.');
+                window.location.href = 'about:blank';
+            }
+        });
+    </script>
+    
 </head>
 <body>
-    <h1>Data Entry Form</h1>
-    <form id="dataForm">
-        <label for="name">Name:</label>
-        <input type="text" id="name" required><br>
-        <label for="cnic">CNIC:</label>
-        <input type="text" id="cnic" required><br>
-        <label for="patwariId">Patwari ID:</label>
-        <input type="text" id="patwariId" required><br>
-        <label for="halqa">Halqa:</label>
-        <input type="text" id="halqa" required><br>
-        <label for="idPassword">ID Password:</label>
-        <input type="text" id="idPassword" required><br>
-        <label for="whatsapp">WhatsApp Number:</label>
-        <input type="text" id="whatsapp" required><br>
-        <label for="password">Password:</label>
-        <input type="password" id="password" required><br>
-        <button type="submit">Submit</button>
-    </form>
-
+    <h1>Patwari Data Table</h1>
     <button id="showDataBtn">Show Data</button>
 
-    <div id="dataSection" style="display: none;">
-        <h2>Saved Data</h2>
-        <input type="text" id="searchBox" placeholder="Search..."><br>
-        <table id="dataTable">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>CNIC</th>
-                    <th>Patwari ID</th>
-                    <th>Halqa</th>
-                    <th>ID Password</th>
-                    <th>WhatsApp</th>
-                    <th>Edit</th>
-                    <th>Delete</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Data will be dynamically added here -->
-            </tbody>
-        </table>
-        <button id="deleteAllBtn">Delete All</button>
-    </div>
+<div id="dataSection" style="display: none;">
+    <!-- Patwari Data Table and other contents go here -->
+</div>
 
+    <table id="patwariTable">
+        <thead>
+            <tr>
+                <th>Patwari Name</th>
+                <th>Patwari ID</th>
+                <th>ID Password</th>
+                <th>Patwari Halqa</th>
+                <th>Whatsapp Nubmer</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Data will be dynamically added here -->
+        </tbody>
+    </table>
     <script src="script.js"></script>
 </body>
 </html>
