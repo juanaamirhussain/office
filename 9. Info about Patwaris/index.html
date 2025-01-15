@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Data Collection Form</title>
+    <h1>Patwaris Data Collection Form</h1>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+
+<div class="form-container">
+    <h2>Data Collection Form</h2>
+    <form id="dataForm">
+        <label for="id">ID</label>
+        <input type="text" id="id" name="id" required>
+
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="cnic">CNIC</label>
+        <input type="text" id="cnic" name="cnic" required>
+
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required>
+
+        <label for="halqa">Halqa</label>
+        <input type="text" id="halqa" name="halqa" required>
+
+        <button type="submit">Submit</button>
+    </form>
+    <div id="result"></div>
+    <p><a href="data.html" class="data-link">View Saved Data</a></p>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
