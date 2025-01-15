@@ -3,8 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Patwari Data Table</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Patwari Data Entry</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h1, h2 {
+            text-align: center;
+        }
+
+        form {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ccc;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        input[type="text"]#searchBox {
+            margin: 20px auto;
+            padding: 10px;
+            width: 100%;
+            max-width: 500px;
+            display: block;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const password = prompt('Enter password to access the page:');
@@ -14,30 +85,158 @@
             }
         });
     </script>
-    
 </head>
 <body>
-    <h1>Patwari Data Table</h1>
-    <button id="showDataBtn">Show Data</button>
+    <h1>Patwari Data Entry</h1>
+    <form id="dataForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" required><br>
+        <label for="cnic">CNIC:</label>
+        <input type="text" id="cnic" required><br>
+        <label for="patwariId">Patwari ID:</label>
+        <input type="text" id="patwariId" required><br>
+        <label for="idKey">ID Key:</label>
+        <input type="text" id="idKey" required><br>
+        <label for="halqa">Halqa:</label>
+        <input type="text" id="halqa" required><br>
+        <label for="whatsapp">Patwari WhatsApp Number:</label>
+        <input type="text" id="whatsapp" required><br>
+        <button type="submit">Submit</button>
+    </form>
 
-<div id="dataSection" style="display: none;">
-    <!-- Patwari Data Table and other contents go here -->
-</div>
-
-    <table id="patwariTable">
+    <h2>Saved Data</h2>
+    <input type="text" id="searchBox" placeholder="Search..."><br>
+    <table id="dataTable">
         <thead>
             <tr>
-                <th>Patwari Name</th>
+                <th>ID</th>
+                <th>Name</th>
+                <th>CNIC</th>
                 <th>Patwari ID</th>
-                <th>ID Password</th>
-                <th>Patwari Halqa</th>
-                <th>Whatsapp Nubmer</th>
+                <th>ID Key</th>
+                <th>Halqa</th>
+                <th>WhatsApp</th>
+                <th>Edit</th>
+                <th>Delete</th>
             </tr>
         </thead>
         <tbody>
             <!-- Data will be dynamically added here -->
         </tbody>
     </table>
-    <script src="script.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('dataForm');
+            const dataTable = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
+            const searchBox = document.getElementById('searchBox');
+
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const id = Date.now();
+                const name = document.getElementById('name').value;
+                const cnic = document.getElementById('cnic').value;
+                const patwariId = document.getElementById('patwariId').value;
+                const idKey = document.getElementById('idKey').value;
+                const halqa = document.getElementById('halqa').value;
+                const whatsapp = document.getElementById('whatsapp').value;
+
+                const data = { id, name, cnic, patwariId, idKey, halqa, whatsapp };
+                saveData(data);
+                appendDataToTable(data);
+                form.reset();
+            });
+
+            searchBox.addEventListener('input', (e) => {
+                const filter = e.target.value.toLowerCase();
+                const rows = dataTable.getElementsByTagName('tr');
+                for (let i = 0; i < rows.length; i++) {
+                    const cells = rows[i].getElementsByTagName('td');
+                    let match = false;
+                    for (let j = 0; j < cells.length - 2; j++) {
+                        if (cells[j].textContent.toLowerCase().includes(filter)) {
+                            match = true;
+                            break;
+                        }
+                    }
+                    rows[i].style.display = match ? '' : 'none';
+                }
+            });
+
+            function saveData(data) {
+                let savedData = JSON.parse(localStorage.getItem('data')) || [];
+                savedData.unshift(data);
+                localStorage.setItem('data', JSON.stringify(savedData));
+            }
+
+            function loadData() {
+                const savedData = JSON.parse(localStorage.getItem('data')) || [];
+                savedData.forEach(data => appendDataToTable(data));
+            }
+
+            function appendDataToTable(data) {
+                const row = dataTable.insertRow();
+                row.insertCell(0).textContent = data.id;
+                row.insertCell(1).textContent = data.name;
+                row.insertCell(2).textContent = data.cnic;
+                row.insertCell(3).textContent = data.patwariId;
+                row.insertCell(4).textContent = data.idKey;
+                row.insertCell(5).textContent = data.halqa;
+                row.insertCell(6).innerHTML = `<a href="https://wa.me/${data.whatsapp}" target="_blank">${data.whatsapp}</a>`;
+                const editCell = row.insertCell(7);
+                const deleteCell = row.insertCell(8);
+
+                const editButton = document.createElement('button');
+                editButton.textContent = 'Edit';
+                editButton.onclick = () => editData(row, data);
+                editCell.appendChild(editButton);
+
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.onclick = () => deleteData(row, data.id);
+                deleteCell.appendChild(deleteButton);
+            }
+
+            function editData(row, data) {
+                const cells = row.getElementsByTagName('td');
+                const name = prompt('Edit Name', data.name);
+                const cnic = prompt('Edit CNIC', data.cnic);
+                const patwariId = prompt('Edit Patwari ID', data.patwariId);
+                const idKey = prompt('Edit ID Key', data.idKey);
+                const halqa = prompt('Edit Halqa', data.halqa);
+                const whatsapp = prompt('Edit WhatsApp', data.whatsapp);
+
+                if (name !== null) data.name = name;
+                if (cnic !== null) data.cnic = cnic;
+                if (patwariId !== null) data.patwariId = patwariId;
+                if (idKey !== null) data.idKey = idKey;
+                if (halqa !== null) data.halqa = halqa;
+                if (whatsapp !== null) data.whatsapp = whatsapp;
+
+                saveEditedData(data);
+                cells[1].textContent = data.name;
+                cells[2].textContent = data.cnic;
+                cells[3].textContent = data.patwariId;
+                cells[4].textContent = data.idKey;
+                cells[5].textContent = data.halqa;
+                cells[6].innerHTML = `<a href="https://wa.me/${data.whatsapp}" target="_blank">${data.whatsapp}</a>`;
+            }
+
+            function saveEditedData(data) {
+                let savedData = JSON.parse(localStorage.getItem('data')) || [];
+                savedData = savedData.map(item => item.id === data.id ? data : item);
+                localStorage.setItem('data', JSON.stringify(savedData));
+            }
+
+            function deleteData(row, id) {
+                row.remove();
+                let savedData = JSON.parse(localStorage.getItem('data')) || [];
+                savedData = savedData.filter(item => item.id !== id);
+                localStorage.setItem('data', JSON.stringify(savedData));
+            }
+
+            loadData();
+        });
+    </script>
 </body>
 </html>
