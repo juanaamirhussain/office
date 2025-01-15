@@ -84,48 +84,7 @@
                 window.location.href = 'about:blank';
             }
         });
-    </script>
-</head>
-<body>
-    <h1>Patwari Data Entry</h1>
-    <form id="dataForm">
-        <label for="name">Name:</label>
-        <input type="text" id="name" required><br>
-        <label for="cnic">CNIC:</label>
-        <input type="text" id="cnic" required><br>
-        <label for="patwariId">Patwari ID:</label>
-        <input type="text" id="patwariId" required><br>
-        <label for="idKey">ID Key:</label>
-        <input type="text" id="idKey" required><br>
-        <label for="halqa">Halqa:</label>
-        <input type="text" id="halqa" required><br>
-        <label for="whatsapp">Patwari WhatsApp Number:</label>
-        <input type="text" id="whatsapp" required><br>
-        <button type="submit">Submit</button>
-    </form>
 
-    <h2>Saved Data</h2>
-    <input type="text" id="searchBox" placeholder="Search..."><br>
-    <table id="dataTable">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>CNIC</th>
-                <th>Patwari ID</th>
-                <th>ID Key</th>
-                <th>Halqa</th>
-                <th>WhatsApp</th>
-                <th>Edit</th>
-                <th>Delete</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Data will be dynamically added here -->
-        </tbody>
-    </table>
-
-    <script>
         document.addEventListener('DOMContentLoaded', () => {
             const form = document.getElementById('dataForm');
             const dataTable = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
