@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Search Box Script -->
+    <link rel="stylesheet" href="master.css">
+    <title>Password Protected Page</title>
+    <script>
+        function checkPassword() {
+            var password = prompt("Please enter the password:");
+            if (password === "") {
+                document.getElementById("protectedContent").style.display = "block";
+            } else {
+                alert("Incorrect password!");
+                window.location.href = "about:blank"; // Redirect to a blank page or handle accordingly
+            }
+        }
+
+        function performSearch() {
+            var searchQuery = document.getElementById("searchInput").value.toLowerCase();
+            var table = document.getElementsByTagName("table")[0];
+            var rows = table.getElementsByTagName("tr");
+
+            for (var i = 1; i < rows.length; i++) { // Start from 1 to skip the header row
+                var cells = rows[i].getElementsByTagName("td");
+                var rowContainsQuery = false;
+
+                for (var j = 0; j < cells.length; j++) {
+                    var cell = cells[j];
+                    if (cell.innerText.toLowerCase().includes(searchQuery)) {
+                        cell.classList.add("highlight"); // Add a highlight class
+                        rowContainsQuery = true;
+                    } else {
+                        cell.classList.remove("highlight");
+                    }
+                }
+
+                rows[i].style.display = rowContainsQuery ? "" : "none"; // Show or hide the row based on the search query
+            }
+        }
+    </script>
+</head>
+<body onload="checkPassword()">
+    <!-- Search box code starts here -->
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search...">
+        <button type="button" onclick="performSearch()">Search</button>
+    </div>
+    <!-- Search box code ends here -->
+
+    <div id="content">
+        <div id="protectedContent" style="display:none;">
+            <!-- Your protected content goes here -->
+            <h1 style="text-align: center;">Welcome to Patwaris Info</h1>
+        </div>
+        <table>
+            <tr>
+                <th>Official Name</th>
+                <th>Official CNIC</th>
+                <th>Official ID</th>
+                <th>Official ID KEY</th>
+                <th>Whatsapp Number</th>
+            </tr>
+            <tr>
+                <td>Mehar Afzal Haraj</td>
+                <td>36302-6272967-3</td>
+                <td>36302-6272967-3</td>
+                <td>Haraj2694*</td>
+                <td><button><a href="https://wa.me/+923006890786" target="_blank">Whatsapp</a></button></td>
+            </tr>
+            <tr>
+                <td>Aamir Hussain</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><button><a href="https://wa.me/+923125136107" target="_blank">Whatsapp</a></button></td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>
