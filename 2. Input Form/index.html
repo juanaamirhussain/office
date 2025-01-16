@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="master.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Official Information Form</title>
+</head>
+<body>
+    <h2 style="text-align: center;">Official Information Form</h2>
+    <form id="infoForm">
+        <label for="officialName">Official Name:</label>
+        <input type="text" id="officialName" name="officialName" required><br><br>
+        <label for="officialCnic">Official CNIC:</label>
+        <input type="text" id="officialCnic" name="officialCnic" required><br><br>
+        <label for="officialId">Official ID:</label>
+        <input type="text" id="officialId" name="officialId" required><br><br>
+        <label for="key">Key:</label>
+        <input type="text" id="key" name="key" required><br><br>
+        <label for="whatsappNumber">WhatsApp Number:</label>
+        <input type="text" id="whatsappNumber" name="whatsappNumber" required><br><br>
+        <button type="button" onclick="addData()">Submit</button>
+    </form>
+    
+    <button id="showListBtn" onclick="showList()">Show List</button>
+
+    <table id="infoTable" style="display:none;">
+        <thead>
+            <tr>
+                <th>Official Name</th>
+                <th>Official CNIC</th>
+                <th>Official ID</th>
+                <th>Key</th>
+                <th>WhatsApp Number</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="infoTableBody"></tbody>
+    </table>
+    
+    <button id="deleteAllBtn" onclick="deleteAll()" style="display:none;">Delete All</button>
+
+    <script>
+        const password = '7897836';
+
+        function addData() {
+            const officialName = document.getElementById('officialName').value;
+            const officialCnic = document.getElementById('officialCnic').value;
+            const officialId = document.getElementById('officialId').value;
+            const key = document.getElementById('key').value;
+            const whatsappNumber = document.getElementById('whatsappNumber').value;
+
+            if (!officialName || !officialCnic || !officialId || !key || !whatsappNumber) {
+                alert('All fields are required!');
+                return;
+            }
+
+            let dataList = JSON.parse(localStorage.getItem('dataList')) || [];
+            dataList.push({officialName, officialCnic, officialId, key, whatsappNumber});
+            localStorage.setItem('dataList', JSON.stringify(dataList));
+
+            renderTable();
+            document.getElementById('infoForm').reset();
+        }
+
+        function renderTable() {
+            const tableBody = document.getElementById('infoTableBody');
+            tableBody.innerHTML = '';
+
+            const dataList = JSON.parse(localStorage.getItem('dataList')) || [];
+            dataList.forEach((data, index) => {
+                const row = tableBody.insertRow();
+                
+                row.insertCell(0).innerText = data.officialName;
+                row.insertCell(1).innerText = data.officialCnic;
+                row.insertCell(2).innerText = data.officialId;
+                row.insertCell(3).innerText = data.key;
+                row.insertCell(4).innerText = data.whatsappNumber;
+
+                const actionsCell = row.insertCell(5);
+                actionsCell.innerHTML = `<button onclick="editRow(${index})">Edit</button> <button onclick="deleteRow(${index})">Delete</button>`;
+            });
+        }
+
+        function showList() {
+            const inputPassword = prompt('Enter password to view the list:');
+            if (inputPassword === password) {
+                document.getElementById('infoTable').style.display = 'block';
+                document.getElementById('deleteAllBtn').style.display = 'block';
+                document.getElementById('showListBtn').style.display = 'none';
+                renderTable();
+            } else {
+                alert('Incorrect password!');
+            }
+        }
+
+        function editRow(index) {
+            const inputPassword = prompt('Enter password to edit:');
+            if (inputPassword === password) {
+                const dataList = JSON.parse(localStorage.getItem('dataList'));
+                const row = document.getElementById('infoTableBody').rows[index];
+
+                for (let i = 0; i < 5; i++) {
+                    row.cells[i].setAttribute('contenteditable', 'true');
+                }
+
+                row.cells[5].innerHTML = `<button onclick="saveEdit(${index})">Save</button>`;
+            } else {
+                alert('Incorrect password!');
+            }
+        }
+
+        function saveEdit(index) {
+            const row = document.getElementById('infoTableBody').rows[index];
+            const dataList = JSON.parse(localStorage.getItem('dataList'));
+
+            dataList[index].officialName = row.cells[0].innerText;
+            dataList[index].officialCnic = row.cells[1].innerText;
+            dataList[index].officialId = row.cells[2].innerText;
+            dataList[index].key = row.cells[3].innerText;
+            dataList[index].whatsappNumber = row.cells[4].innerText;
+
+            localStorage.setItem('dataList', JSON.stringify(dataList));
+            renderTable();
+        }
+
+        function deleteRow(index) {
+            const inputPassword = prompt('Enter password to delete:');
+            if (inputPassword === password) {
+                let dataList = JSON.parse(localStorage.getItem('dataList'));
+                dataList.splice(index, 1);
+                localStorage.setItem('dataList', JSON.stringify(dataList));
+                renderTable();
+            } else {
+                alert('Incorrect password!');
+            }
+        }
+
+        function deleteAll() {
+            const inputPassword = prompt('Enter password to delete all:');
+            if (inputPassword === password) {
+                localStorage.removeItem('dataList');
+                renderTable();
+            } else {
+                alert('Incorrect password!');
+            }
+        }
+
+        window.onload = function() {
+            renderTable();
+        }
+    </script>
+</body>
+</html>
