@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="master.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Badrat</title>
+    <h1>Fard Badrat</h1>
+</head>
+<body>
+    <div class="search-container">
+        <input type="text" id="search-mouza" placeholder="Search Mouza Name...">
+        <input type="text" id="search-khewat" placeholder="Search Khewat No...">
+    </div>
+    <ul id="badrat-list">
+        <div>
+        <li>Date: 23-01-2025</li>
+        <li class="mouza">Mouza: Thati Saad.O.Shah</li>
+        <li class="khewat">Khewat No: 365</li>
+        <li><a href="Khewat Number 365 Badar.xlsm" target="_blank">Khewat Number 365 Thati Saad.o.Shah</a></li></div>
+
+
+
+
+        
+    </ul>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--This is java script-->
+    <script>
+        document.getElementById('search-mouza').addEventListener('input', function() {
+            const query = this.value.toLowerCase();
+            const items = document.querySelectorAll('#badrat-list .mouza');
+            items.forEach(item => {
+                if (item.textContent.toLowerCase().includes(query)) {
+                    item.parentElement.style.display = 'block';
+                } else {
+                    item.parentElement.style.display = 'none';
+                }
+            });
+        });
+
+        document.getElementById('search-khewat').addEventListener('input', function() {
+            const query = this.value.toLowerCase();
+            const items = document.querySelectorAll('#badrat-list .khewat');
+            items.forEach(item => {
+                if (item.textContent.toLowerCase().includes(query)) {
+                    item.parentElement.style.display = 'block';
+                } else {
+                    item.parentElement.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
