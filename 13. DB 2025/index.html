@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="master.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Backup Files of Mouzas</title>
+    <h1>Main Backup Files of Mouza</h1>
+    <style>
+        /* Add some styling for the search box and button */
+        #search-box {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <input type="text" id="search-box" placeholder="Search for a Mouza...">
+    <ul id="mouza-list">
+        <li><a href="bhoonawali.xlsm"><button>Bhonawali</button></a></li>
+        <li><a href="bukhwala.xlsm"><button>Bukhwala</button></a></li>
+        <li><a href="Dhok Haleem.xlsm"><button>Dhok Haleem</button></a></li>
+        <li><a href="Dhok Qazi.xlsm"><button>Dhok Qazi</button></a></li>
+        <li><a href="Domyial.xlsm"><button>Domyial</button></a></li>
+        <li><a href="Kamryial.xlsm"><button>Kamryial</button></a></li>
+        <li><a href="Kisran.xlsm"><button>Kisran</button></a></li>
+        <li><a href="makyial.xlsm"><button>Makyial</button></a></li>
+        <li><a href="mianwala.xlsm"><button>Mianwala</button></a></li>
+        <li><a href="Nakah Ghulam Shah and Sorra.xlsm"><button>Nakah Ghulam Shah and Sorra</button></a></li>
+        <li><a href="Nathian Malkan.xlsm"><button>Nathian Malkan</button></a></li>
+        <li><a href="Nathyial.xlsm"><button>Nathyial</button></a></li>
+        <li><a href="noshera.xlsm"><button>Noshera</button></a></li>
+        <li><a href="Pind.xlsm"><button>Pind</button></a></li>
+        <li><a href="Pirana.xlsm"><button>Pirana</button></a></li>
+        <li><a href="Pirani.xlsm"><button>Pirani</button></a></li>
+        <li><a href="rawal.xlsm"><button>Rawal</button></a></li>
+        <li><a href="sarwayi.xlsm"><button>Sarwayi</button></a></li>
+        <li><a href="sipayla.xlsm"><button>Sipyala</button></a></li>
+        <li><a href="surag.xlsm"><button>Surag</button></a></li>
+        <li><a href="Thati Saad.O.Shah.xlsm"><button>Thati Saad.O.Shah</button></a></li>
+    </ul> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!--From Here Java Script Started-->
+    <script>
+        document.getElementById('search-box').addEventListener('input', searchMouzas);
+
+        function searchMouzas() {
+            var input = document.getElementById('search-box').value.toLowerCase();
+            var mouzaList = document.getElementById('mouza-list');
+            var li = mouzaList.getElementsByTagName('li');
+            
+            for (var i = 0; i < li.length; i++) {
+                var a = li[i].getElementsByTagName('button')[0];
+                if (a.innerHTML.toLowerCase().indexOf(input) > -1) {
+                    li[i].style.display = "";
+                } else {
+                    li[i].style.display = "none";
+                }
+            }
+        }
+    </script>
+</body>
+</html>
